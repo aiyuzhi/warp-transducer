@@ -160,7 +160,7 @@ GpuRNNT<ProbT>::compute_cost_and_score(const ProbT* const acts,
         start = std::chrono::high_resolution_clock::now();
 #endif
         /*
-         compute_betas_kernel<ProbT><<<minibatch_, maxU_, 0, stream_>>>(acts, denom, betas, llBackward,
+        compute_betas_kernel<ProbT><<<minibatch_, maxU_, 0, stream_>>>(acts, denom, betas, llBackward,
             input_lengths, label_lengths, labels, minibatch_, maxT_, maxU_, alphabet_size_, blank_, batch_first_);
          */
         compute_betas_kernel_naive<ProbT><<<1, minibatch_, 0, stream_>>>(acts, denom, betas, llBackward,

@@ -17,6 +17,7 @@ ENDIF()
 
 include_directories(include)
 
+set(CUDA_TOOLKIT_ROOT_DIR "/aifs/tools/CUDA/cuda-9.0")
 FIND_PACKAGE(CUDA)
 MESSAGE(STATUS "cuda found ${CUDA_FOUND}")
 

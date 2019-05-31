@@ -87,7 +87,7 @@ bool run_test(int B, int T, int L, int A, int num_threads) {
                     "Error: get_workspace_size in run_test");
 
     std::vector<float> time;
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 100; ++i) {
         void* rnnt_gpu_workspace;
         cudaMalloc(&rnnt_gpu_workspace, gpu_alloc_bytes);
 
