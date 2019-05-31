@@ -73,7 +73,7 @@ rnntStatus_t compute_rnnt_loss(const float* const activations, //BTUV
     } else if (options.loc == RNNT_GPU) {
 #ifdef __CUDACC__
         GpuRNNT<float> rnnt(minibatch, options.maxT, options.maxU, alphabet_size, workspace,
-                                options.blank_label, options.num_threads, options.stream);
+                                options.blank_label, options.num_threads, options.stream, options.batch_first);
 
         if (gradients != NULL)
             return rnnt.cost_and_grad(activations, gradients,
