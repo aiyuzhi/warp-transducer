@@ -53,7 +53,7 @@ int cpu_rnnt(torch::Tensor acts,
 #endif
 
     size_t cpu_size_bytes;
-    get_workspace_size(maxT, maxU, minibatch_size,
+    get_rnnt_workspace_size(maxT, maxU, minibatch_size,
                        false, &cpu_size_bytes);
 
     float* cpu_workspace = (float*) new unsigned char[cpu_size_bytes];
@@ -105,7 +105,7 @@ int gpu_rnnt(torch::Tensor acts,
 #endif
 
     size_t gpu_size_bytes;
-    get_workspace_size(maxT, maxU, minibatch_size,
+    get_rnnt_workspace_size(maxT, maxU, minibatch_size,
                        true, &gpu_size_bytes);
 
     cudaSetDevice(acts.get_device());

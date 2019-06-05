@@ -93,7 +93,7 @@ rnntStatus_t compute_rnnt_loss(const float* const activations, //BTUV
 }
 
 
-rnntStatus_t get_workspace_size(int maxT, int maxU,
+rnntStatus_t get_rnnt_workspace_size(int maxT, int maxU,
                                int minibatch,
                                bool gpu,
                                size_t* size_bytes)

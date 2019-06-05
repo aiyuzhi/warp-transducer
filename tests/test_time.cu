@@ -81,10 +81,10 @@ bool run_test(int B, int T, int L, int A, int num_threads) {
     // cudaMemcpyAsync(input_length_gpu, sizes.data(), sizes.size() * sizeof(int), cudaMemcpyHostToDevice, stream);
 
     size_t gpu_alloc_bytes;
-    throw_on_error(get_workspace_size(T, L+1, B,
+    throw_on_error(get_rnnt_workspace_size(T, L+1, B,
                                      true,
                                      &gpu_alloc_bytes),
-                    "Error: get_workspace_size in run_test");
+                    "Error: get_rnnt_workspace_size in run_test");
 
     std::vector<float> time;
     for (int i = 0; i < 100; ++i) {
