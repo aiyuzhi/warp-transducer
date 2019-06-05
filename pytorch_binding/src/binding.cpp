@@ -59,7 +59,7 @@ int cpu_rnnt(torch::Tensor trans_acts,
 #endif
 
     size_t cpu_size_bytes;
-    get_workspace_size(maxT, maxU, minibatch_size,
+    get_rnnt_workspace_size(maxT, maxU, minibatch_size,
                        false, &cpu_size_bytes);
 
     void* cpu_workspace = malloc(cpu_size_bytes);
@@ -114,7 +114,7 @@ int gpu_rnnt(torch::Tensor trans_acts,
     options.stream = at::cuda::getCurrentCUDAStream();
 
     size_t gpu_size_bytes;
-    get_workspace_size(maxT, maxU, minibatch_size,
+    get_rnnt_workspace_size(maxT, maxU, minibatch_size,
                        true, &gpu_size_bytes);
 
     cudaSetDevice(trans_acts.get_device());

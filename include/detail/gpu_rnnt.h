@@ -20,9 +20,9 @@ class GpuRNNT {
 public:
     // Noncopyable
     GpuRNNT(int minibatch, int maxT, int maxU, int alphabet_size, void* workspace, 
-            int blank, int num_threads, CUstream stream) :
+            int blank, int num_threads, CUstream stream, bool batch_first = true) :
         minibatch_(minibatch), maxT_(maxT), maxU_(maxU), alphabet_size_(alphabet_size), 
-        gpu_workspace(workspace), blank_(blank), num_threads_(num_threads), stream_(stream) {
+        gpu_workspace(workspace), blank_(blank), num_threads_(num_threads), stream_(stream), batch_first_(batch_first) {
 #if defined(RNNT_DISABLE_OMP) || defined(APPLE)
 #else
         if (num_threads > 0) {
@@ -72,6 +72,7 @@ private:
     int blank_;
     int num_threads_;
     CUstream stream_;
+    bool batch_first_;
     
 };
 
@@ -80,8 +81,8 @@ void
 GpuRNNT<ProbT>::log_softmax(const ProbT* const ft, const ProbT* const gu, ProbT* denom) {
 
     // trans_acts + pred_acts -> log_softmax denominator
-    reduce_max(ft, gu, denom, alphabet_size_, minibatch_ * maxT_ * maxU_, maxT_, maxU_, 0, stream_);
-    reduce_exp(ft, gu, denom, alphabet_size_, minibatch_ * maxT_ * maxU_, maxT_, maxU_, 1, stream_);
+    reduce_max(ft, gu, denom, alphabet_size_, minibatch_ * maxT_ * maxU_, minibatch_, maxT_, maxU_, 0, batch_first_, stream_);
+    reduce_exp(ft, gu, denom, alphabet_size_, minibatch_ * maxT_ * maxU_, minibatch_, maxT_, maxU_, 1, batch_first_, stream_);
 }
 
 template<typename ProbT>
@@ -138,7 +139,7 @@ GpuRNNT<ProbT>::compute_cost_and_score(const ProbT* const trans_acts,
     // alphas
     // start = std::chrono::high_resolution_clock::now();
     compute_alphas_kernel<ProbT><<<1, minibatch_, 0, stream_>>>(trans_acts, pred_acts, denom, alphas, llForward, 
-        xlen, ylen, labels, minibatch_, maxT_, maxU_, alphabet_size_, blank_);
+        xlen, ylen, labels, minibatch_, maxT_, maxU_, alphabet_size_, blank_, batch_first_);
     // cudaStreamSynchronize(stream_);
     // end = std::chrono::high_resolution_clock::now();
     // elapsed = end - start;
@@ -147,7 +148,7 @@ GpuRNNT<ProbT>::compute_cost_and_score(const ProbT* const trans_acts,
         // betas
         // start = std::chrono::high_resolution_clock::now();
         compute_betas_kernel<ProbT><<<1, minibatch_, 0, stream_>>>(trans_acts, pred_acts, denom, betas, llBackward,
-            xlen, ylen, labels, minibatch_, maxT_, maxU_, alphabet_size_, blank_);
+            xlen, ylen, labels, minibatch_, maxT_, maxU_, alphabet_size_, blank_, batch_first_);
         // cudaStreamSynchronize(stream_);
         // end = std::chrono::high_resolution_clock::now();
         // elapsed = end - start;
@@ -156,7 +157,7 @@ GpuRNNT<ProbT>::compute_cost_and_score(const ProbT* const trans_acts,
         // start = std::chrono::high_resolution_clock::now();
         compute_grad_kernel<128, ProbT><<<minibatch_ * maxT_ * maxU_, 128, 0, stream_>>>(trans_grads, pred_grads, 
             trans_acts, pred_acts, denom, alphas, betas, llForward, xlen, ylen, labels, 
-            minibatch_, maxT_, maxU_, alphabet_size_, blank_);
+            minibatch_, maxT_, maxU_, alphabet_size_, blank_, batch_first_);
         // cudaStreamSynchronize(stream_);
         // end = std::chrono::high_resolution_clock::now();
         // elapsed = end - start;

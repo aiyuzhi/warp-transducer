@@ -117,14 +117,14 @@ class WarpRNNTOpBase : public tf::OpKernel {
         if(options.loc == RNNT_GPU) {
             use_gpu = true;
         }
-        auto warp_status = get_workspace_size(max_time,
+        auto warp_status = get_rnnt_workspace_size(max_time,
                                               max_u,
                                               batch_size,
                                               use_gpu,
                                               &workspace_size_bytes);
 
         OP_REQUIRES(ctx, warp_status == RNNT_STATUS_SUCCESS,
-                    tf::errors::Internal("warp_rnnt error in get_workspace_size: ",
+                    tf::errors::Internal("warp_rnnt error in get_rnnt_workspace_size: ",
                                          rnntGetStatusString(warp_status)));
 
         auto workspace_shape = tf::TensorShape{static_cast<int64_t>(workspace_size_bytes)};

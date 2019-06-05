@@ -78,7 +78,7 @@ rnntStatus_t compute_rnnt_loss(const float* const trans_acts, // BTV
     } else if (options.loc == RNNT_GPU) {
 #ifdef __CUDACC__
         GpuRNNT<float> rnnt(minibatch, options.maxT, options.maxU, alphabet_size, workspace, 
-                                options.blank_label, options.num_threads, options.stream);
+                                options.blank_label, options.num_threads, options.stream, options.batch_first);
 
         if (trans_grad != NULL && pred_grad != NULL)
             return rnnt.cost_and_grad(trans_acts, pred_acts,
@@ -100,7 +100,7 @@ rnntStatus_t compute_rnnt_loss(const float* const trans_acts, // BTV
 }
 
 
-rnntStatus_t get_workspace_size(int maxT, int maxU,
+rnntStatus_t get_rnnt_workspace_size(int maxT, int maxU,
                                int minibatch,
                                bool gpu,
                                size_t* size_bytes)

@@ -59,6 +59,9 @@ struct rnntOptions {
 
     /// the maximum length of label sequence
     int maxU;
+
+    /// memory structure
+    bool batch_first;
 };
 
 /** Compute the RNN Transducer loss between a sequence
@@ -94,7 +97,7 @@ struct rnntOptions {
  * \param [out] costs Always in CPU memory.  The cost of each example in the
  *              minibatch.
  * \param [in,out] workspace In same memory space as probs. Should be of
- *                 size requested by get_workspace_size.
+ *                 size requested by get_rnnt_workspace_size.
  * \param [in]  options see struct rnntOptions
  *
  *  \return Status information
@@ -127,7 +130,7 @@ rnntStatus_t compute_rnnt_loss(const float* const trans_acts,
  *
  *  \return Status information
  **/
-rnntStatus_t get_workspace_size(int maxT, int maxU,
+rnntStatus_t get_rnnt_workspace_size(int maxT, int maxU,
                                int minibatch,
                                bool gpu,
                                size_t* size_bytes);

@@ -17,7 +17,8 @@ ENDIF()
 
 include_directories(include)
 
-FIND_PACKAGE(CUDA 8.0)
+set(CUDA_TOOLKIT_ROOT_DIR "/aifs/tools/CUDA/cuda-9.0")
+FIND_PACKAGE(CUDA)
 MESSAGE(STATUS "cuda found ${CUDA_FOUND}")
 
 option(WITH_GPU "compile warp-rnnt with cuda." ${CUDA_FOUND})
