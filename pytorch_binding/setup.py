@@ -1,3 +1,4 @@
+from distutils.version import LooseVersion
 import os
 import platform
 import sys
@@ -5,13 +6,18 @@ from setuptools import setup, find_packages
 import torch
 from torch.utils.cpp_extension import BuildExtension, CppExtension
 
-extra_compile_args = ['-std=c++11', '-fPIC']
+
+extra_compile_args = ['-fPIC']
+if LooseVersion(torch.__version__) >= LooseVersion("1.5.0"):
+    extra_compile_args += ['-std=c++14']
+else:
+    extra_compile_args += ['-std=c++11']
 warp_rnnt_path = "../build"
 
 if torch.cuda.is_available() or "CUDA_HOME" in os.environ:
     enable_gpu = True
 else:
-    print("Torch was not built with CUDA support, not building warp-ctc GPU extensions.")
+    print("Torch was not built with CUDA support, not building GPU extensions.")
     enable_gpu = False
 
 if platform.system() == 'Darwin':

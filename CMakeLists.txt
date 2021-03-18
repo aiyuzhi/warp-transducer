@@ -17,7 +17,7 @@ ENDIF()
 
 include_directories(include)
 
-set(CUDA_TOOLKIT_ROOT_DIR "/aifs/tools/CUDA/cuda-9.0")
+set(CUDA_TOOLKIT_ROOT_DIR "/aifs/tools/CUDA/cuda-10.0")
 FIND_PACKAGE(CUDA)
 MESSAGE(STATUS "cuda found ${CUDA_FOUND}")
 
@@ -63,6 +63,11 @@ ENDIF()
 
 IF (CUDA_VERSION GREATER 8.9)
     set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -gencode arch=compute_70,code=sm_70")
+ENDIF()
+
+IF (CUDA_VERSION GREATER 9.0)
+    set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -gencode arch=compute_72,code=sm_72")
+    set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -gencode arch=compute_75,code=sm_75")
 ENDIF()
 
 if (NOT APPLE)
